@@ -7,6 +7,43 @@ namespace MailClient.Dictionaries
 {
 	public abstract class SpellCheckerSettings
 	{
+		private static SpellCheckerEmailSettings emailSettings;
+		
+		public static SpellCheckerEmailSettings EmailSettings
+		{
+			get {
+				if (emailSettings == null)
+					emailSettings = new SpellCheckerEmailSettings();
+				return emailSettings;
+			}
+		}
+
+		private static SpellCheckerGeneralSettings generalSettings;
+
+		public static SpellCheckerGeneralSettings GeneralSettings
+		{
+			get
+			{
+				if (generalSettings == null)
+					generalSettings = new SpellCheckerGeneralSettings();
+				return generalSettings;
+			}
+		}
+
+		private static SpellCheckerIMSettings imSettings;
+
+		public static SpellCheckerIMSettings IMSettings
+		{
+			get
+			{
+				if (imSettings == null)
+					imSettings = new SpellCheckerIMSettings();
+				return imSettings;
+			}
+		}
+
+
+
 		private IDictionarySetting activeSetting;
 
 

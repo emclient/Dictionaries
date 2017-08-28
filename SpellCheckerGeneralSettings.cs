@@ -2,25 +2,7 @@
 {
 	public class SpellCheckerGeneralSettings : SpellCheckerSettings
 	{
-		private static SpellCheckerGeneralSettings instance;
-
-		public static SpellCheckerGeneralSettings Instance
-		{
-			get
-			{
-				lock (typeof(SpellCheckerGeneralSettings))
-				{
-					if (instance == null)
-					{
-						instance = new SpellCheckerGeneralSettings();
-					}
-					return instance;
-				}
-			}
-		}
-		
-
-		private SpellCheckerGeneralSettings()
+		internal SpellCheckerGeneralSettings()
 		{
 			
 		}

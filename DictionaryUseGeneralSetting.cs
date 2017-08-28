@@ -13,7 +13,7 @@
 
 		public DictionaryFilePair FilePair
 		{
-			get { return SpellCheckerGeneralSettings.Instance.ActiveFilePair; }
+			get { return SpellCheckerSettings.GeneralSettings.ActiveFilePair; }
 		}
 
 		public override string ToString()

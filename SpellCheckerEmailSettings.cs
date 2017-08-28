@@ -2,27 +2,9 @@
 {
 	public class SpellCheckerEmailSettings : SpellCheckerSettings
 	{
-		private static SpellCheckerEmailSettings instance;
-
-		public static SpellCheckerEmailSettings Instance
-		{
-			get
-			{
-				lock (typeof(SpellCheckerEmailSettings))
-				{
-					if (instance == null)
-					{
-						instance = new SpellCheckerEmailSettings();
-					}
-					return instance;
-				}
-			}
-		}
-
-		private SpellCheckerEmailSettings()
+		internal SpellCheckerEmailSettings()
 		{
 		}
-
 
 		protected override string UseSpellCheckSettingsName
 		{

@@ -44,7 +44,7 @@ namespace MailClient.Dictionaries
 
 			this.cachedSettings = settings.ActiveSetting;
 
-			if (settings.ActiveSetting is DictionaryKeyboardSetting || (settings.ActiveSetting is DictionaryUseGeneralSetting && SpellCheckerGeneralSettings.Instance.ActiveSetting is DictionaryKeyboardSetting))
+			if (settings.ActiveSetting is DictionaryKeyboardSetting || (settings.ActiveSetting is DictionaryUseGeneralSetting && SpellCheckerSettings.GeneralSettings.ActiveSetting is DictionaryKeyboardSetting))
 				parentForm.InputLanguageChanged += parentForm_InputLanguageChanged;
 		}
 
