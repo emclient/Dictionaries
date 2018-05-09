@@ -92,7 +92,7 @@ namespace MailClient.Dictionaries
 		}
 
 
-		public Hunspell GetSpellChecker()
+		public ISpellChecker GetSpellChecker()
 		{
 			if (ActiveFilePair != null)
 			{
