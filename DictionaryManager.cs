@@ -3,8 +3,13 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Windows.Forms;
-using AppKit;
 using Microsoft.Experimental.IO;
+
+#if XAMARINMAC
+using AppKit;
+#elif MONOMAC
+using MonoMac.AppKit;
+#endif
 
 namespace MailClient.Dictionaries
 {
