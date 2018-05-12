@@ -1,4 +1,4 @@
-﻿namespace MailClient.Dictionaries
+namespace MailClient.Dictionaries
 {
 	public static class SpellCheckerManager
 	{
@@ -19,7 +19,7 @@
 #if MAC
 			return MacSpellChecker.Create(settings);
 #else
-			return HunspellChecker.Create(settings);
+			return HunspellChecker.Create(settings.ActiveFilePair);
 #endif
 		}
 	}
