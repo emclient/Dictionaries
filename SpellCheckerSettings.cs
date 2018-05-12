@@ -115,7 +115,6 @@ namespace MailClient.Dictionaries
 				return langs.Contains(code);
 			}
 #else
-			return SpellCheckerManager.CreateSpellChecker(this)?.AvailableLanguages.Contains()
 			if (!string.IsNullOrEmpty(ActiveFilePair.DictFile) &&
 				!string.IsNullOrEmpty(ActiveFilePair.AffFile) &&
 				LongPathFile.Exists(ActiveFilePair.DictFile) &&
