@@ -8,6 +8,9 @@
 		{
 			if (instance == null)
 				instance = CreateSpellCheckerInternal(settings);
+
+			instance.Language = settings.ActiveSetting.FilePair.CultureString;
+
 			return instance;
 		}
 

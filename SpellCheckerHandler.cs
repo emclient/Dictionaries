@@ -81,17 +81,26 @@ namespace MailClient.Dictionaries
 			menuItem.DropDownItemClicked -= new ToolStripItemClickedEventHandler(SpellCheckMenu_DropDownItemClicked);
 			menuItem.DropDownItemClicked += new ToolStripItemClickedEventHandler(SpellCheckMenu_DropDownItemClicked);
 
+			var checker = this.SpellCheckerSettings.GetSpellChecker();
+			if (checker != null && checker.SupportsLanguageIdentification)
+			{
+				var dict = new DictionaryAutoSetting();
+				var item = new ToolStripMenuItem(Resources.UI.Forms.AutomaticByLanguage);
+				item.Tag = dict;
+				item.Checked = dict.FilePair.Equals(cachedSettings.FilePair);
+				menuItem.DropDownItems.Add(item);
+				menuItem.DropDownItems.Add(new ToolStripSeparator());
+			}
+
 			int count = 0;
-			foreach (MailClient.Dictionaries.DictionaryFileSetting dictionary in MailClient.Dictionaries.DictionaryManager.FileSettings.OrderBy(dict => dict.ToString()))
+			var dictionaries = DictionaryManager.FileSettings.OrderBy(dict => dict.ToString());
+			foreach (DictionaryFileSetting dictionary in dictionaries)
 			{
 				count++;
 
 				ToolStripMenuItem item = new ToolStripMenuItem(dictionary.ToString());
 				item.Tag = dictionary;
-
-				if (dictionary.FilePair.Equals(cachedSettings.FilePair))
-					item.Checked = true;
-
+				item.Checked = dictionary.FilePair.Equals(cachedSettings.FilePair);
 				menuItem.DropDownItems.Add(item);
 			}
 
@@ -100,7 +109,7 @@ namespace MailClient.Dictionaries
 				menuItem.DropDownItems.Add(new ToolStripSeparator());
 			}
 
-			ToolStripMenuItem menuItemMore = new ToolStripMenuItem(Resources.UI.Forms.DownloadDictionaries);
+			var menuItemMore = new ToolStripMenuItem(Resources.UI.Forms.DownloadDictionaries);
 			menuItemMore.Tag = "download";
 			menuItem.DropDownItems.Add(menuItemMore);
 		}
@@ -117,9 +126,9 @@ namespace MailClient.Dictionaries
 			ToolStripMenuItem item = e.ClickedItem as ToolStripMenuItem;
 			if (item != null)
 			{
-				if (item.Tag is DictionaryFileSetting)
+				if (item.Tag is IDictionarySetting)
 				{
-					settings.ActiveSetting = cachedSettings = (DictionaryFileSetting)item.Tag;
+					settings.ActiveSetting = cachedSettings = (IDictionarySetting)item.Tag;
 					if (SpellCheckerChanged != null)
 						SpellCheckerChanged(this, EventArgs.Empty);
 				}

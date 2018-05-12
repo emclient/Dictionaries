@@ -13,6 +13,10 @@ namespace MailClient.Dictionaries
 
 		List<string> AvailableLanguages { get; }
 		string Language { get; set; }
+
+		bool SupportsLanguageIdentification { get; }
+		bool AutomaticallyIdentifiesLanguages { get; set; }
+
 		bool IsDisposed { get; }
 	}
 }

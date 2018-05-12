@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Windows.Forms;
+using AppKit;
 using Microsoft.Experimental.IO;
 
 namespace MailClient.Dictionaries
@@ -22,7 +23,15 @@ namespace MailClient.Dictionaries
 		static DictionaryManager()
 		{
 			builtinDictFolder = Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "Dictionaries");
+#if MAC
+			var library = MacBridge.FoundationStatic.SearchPathForDirectoriesInDomains(
+				MacBridge.FoundationStatic.NSSearchPathDirectory.NSLibraryDirectory,
+				MacBridge.FoundationStatic.NSSearchPathDomainMask.NSUserDomainMask, true);
+			userDictFolder = library.Length > 0 ? Path.Combine(library[0], "Spelling") : String.Empty;
+
+#else
 			userDictFolder = Path.Combine(Program.DataStore.Location, "Dictionaries");
+#endif
 		}
 
 
@@ -134,7 +143,7 @@ namespace MailClient.Dictionaries
 				}
 				else
 				{
-					pair = new DictionaryFilePair("", "");
+					pair = new DictionaryFilePair();
 					return false;
 				}
 			}
@@ -146,13 +155,38 @@ namespace MailClient.Dictionaries
 			files = new List<DictionaryFilePair>();
 			fileSettings = new List<DictionaryFileSetting>();
 
-			if (LongPathDirectory.Exists(builtinDictFolder))
-				loadDictionariesFromFolder(builtinDictFolder);
+			LoadBuiltInDirectories();
 
 			if (LongPathDirectory.Exists(userDictFolder))
 				loadDictionariesFromFolder(userDictFolder);
 		}
-
+#if MAC
+		static void LoadBuiltInDirectories()
+		{
+			var langs = NSSpellChecker.SharedSpellChecker.AvailableLanguages;
+			foreach(var lang in langs)
+			{
+				var code = lang.Replace("_", "-");
+				try
+				{
+					var dfp = DictionaryFilePair.FromFileName(code);
+					var dfs = new DictionaryFileSetting(dfp);
+					files.Add(dfp);
+					fileSettings.Add(dfs);
+				}
+				catch
+				{
+					System.Diagnostics.Debug.WriteLine($"Failed adding dictionary for culture '{code}'");
+				}
+			}
+		}
+#else
+		static void LoadBuiltInDirectories()
+		{
+			if (LongPathDirectory.Exists(builtinDictFolder))
+				loadDictionariesFromFolder(builtinDictFolder);
+		}
+#endif
 		private static void loadDictionariesFromFolder(string folder)
 		{
 			DirectoryInfo dirInfo = new DirectoryInfo(folder);

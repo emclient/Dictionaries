@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using MailClient.Collections;
+using Microsoft.Experimental.IO;
 using NHunspell;
 
 namespace MailClient.Dictionaries
@@ -70,9 +71,23 @@ namespace MailClient.Dictionaries
 		{
 			get
 			{
-				// TODO:
-				return new List<string>();
+				var list = new List<string>();
+				foreach (var file in DictionaryManager.DictFiles)
+					list.Add(file.CultureString);
+
+				return list;
 			}
+		}
+
+		public virtual bool SupportsLanguageIdentification
+		{
+			get { return false; }
+		}
+
+		public virtual bool AutomaticallyIdentifiesLanguages
+		{
+			get { return false; }
+			set { }
 		}
 
 		public virtual bool IsDisposed
@@ -98,6 +113,9 @@ namespace MailClient.Dictionaries
 					spellCheckers.Remove(culture);
 			}
 
+			if (!CheckIfActiveDictionaryExists(settings.ActiveFilePair))
+				return null;
+
 			var spellChecker = new Hunspell(settings.ActiveFilePair.AffFile, settings.ActiveFilePair.DictFile);
 
 			//load words from custom dictionary
@@ -109,7 +127,7 @@ namespace MailClient.Dictionaries
 				StreamReader reader = null;
 				try
 				{
-					reader = new StreamReader(Microsoft.Experimental.IO.LongPathFile.Open(customDictPath, FileMode.Open, FileAccess.Read, FileShare.Read));
+					reader = new StreamReader(LongPathFile.Open(customDictPath, FileMode.Open, FileAccess.Read, FileShare.Read));
 
 					string line;
 					do
@@ -123,7 +141,7 @@ namespace MailClient.Dictionaries
 								{
 									try
 									{
-										cultureInfo = new CultureInfo(culture);
+										cultureInfo = CultureInfo.GetCultureInfo(culture);
 									}
 									catch
 									{
@@ -149,6 +167,12 @@ namespace MailClient.Dictionaries
 
 			spellCheckers.Add(culture, spellChecker);
 			return new HunspellChecker(culture, spellChecker);
+		}
+
+		internal static bool CheckIfActiveDictionaryExists(DictionaryFilePair pair)
+		{
+			return !string.IsNullOrEmpty(pair.DictFile) && !string.IsNullOrEmpty(pair.AffFile)
+					&& LongPathFile.Exists(pair.DictFile) && LongPathFile.Exists(pair.AffFile);
 		}
 
 		internal virtual void AddWordToCustomDictionary(SpellCheckerSettings settings, string word)
@@ -186,7 +210,7 @@ namespace MailClient.Dictionaries
 			}
 			catch
 			{
-				System.Diagnostics.Debug.Assert(false);
+				Debug.Assert(false);
 			}
 			finally
 			{

@@ -3,5 +3,6 @@
 	Keyboard,
 	Language,
 	File,
-	UseGeneral
+	UseGeneral,
+	Auto
 }

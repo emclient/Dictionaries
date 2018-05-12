@@ -8,10 +8,11 @@ namespace MailClient.Dictionaries
 	public abstract class SpellCheckerSettings
 	{
 		private static SpellCheckerEmailSettings emailSettings;
-		
+
 		public static SpellCheckerEmailSettings EmailSettings
 		{
-			get {
+			get
+			{
 				if (emailSettings == null)
 					emailSettings = new SpellCheckerEmailSettings();
 				return emailSettings;
@@ -95,25 +96,26 @@ namespace MailClient.Dictionaries
 		public ISpellChecker GetSpellChecker()
 		{
 			if (ActiveFilePair != null)
-			{
-				if (CheckIfActiveDictionaryExists())
-				{
-					FileInfo dictInfo = new FileInfo(ActiveFilePair.DictFile);
-					FileInfo affInfo = new FileInfo(ActiveFilePair.AffFile);
-
-					if ((dictInfo.Attributes & FileAttributes.Directory) == 0 &&
-						(affInfo.Attributes & FileAttributes.Directory) == 0)
-					{
-						return SpellCheckerManager.CreateSpellChecker(this);
-					}
-				}
-			}
+				return SpellCheckerManager.CreateSpellChecker(this);
 
 			return null;
 		}
 
 		public bool CheckIfActiveDictionaryExists()
 		{
+#if MAC
+			var code = ActiveFilePair.CultureString;
+			if (String.IsNullOrEmpty(code))
+				return false;
+
+			var checker = SpellCheckerManager.CreateSpellChecker(this);
+			if (checker != null)
+			{
+				var langs = checker.AvailableLanguages;
+				return langs.Contains(code);
+			}
+#else
+			return SpellCheckerManager.CreateSpellChecker(this)?.AvailableLanguages.Contains()
 			if (!string.IsNullOrEmpty(ActiveFilePair.DictFile) &&
 				!string.IsNullOrEmpty(ActiveFilePair.AffFile) &&
 				LongPathFile.Exists(ActiveFilePair.DictFile) &&
@@ -121,7 +123,7 @@ namespace MailClient.Dictionaries
 			{
 				return true;
 			}
-
+#endif
 			return false;
 		}
 
@@ -147,6 +149,8 @@ namespace MailClient.Dictionaries
 					return new DictionaryLanguageSetting();
 				case DictionarySettingType.UseGeneral:
 					return new DictionaryUseGeneralSetting();
+				case DictionarySettingType.Auto:
+					return new DictionaryAutoSetting();
 
 				default:
 					throw new NotImplementedException("Missing Spellcheck Dictionary Setting.");

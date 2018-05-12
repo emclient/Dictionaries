@@ -6,12 +6,11 @@ namespace MailClient.Dictionaries
 	public class DictionaryFileSetting : IDictionarySetting
 	{
 		DictionaryFilePair filePair;
-		CultureInfo culture;
+		string displayName;
 
 		public DictionaryFileSetting(DictionaryFilePair filePair)
 		{
 			this.filePair = filePair;
-			this.culture = new CultureInfo(filePair.CultureString);
 		}
 
 		public DictionarySettingType Type
@@ -26,7 +25,20 @@ namespace MailClient.Dictionaries
 
 		public override string ToString()
 		{
-			return culture != null ? culture.DisplayName : string.Empty;
+			if (displayName == null)
+			{
+				try
+				{
+					var culture = CultureInfo.GetCultureInfo(filePair.CultureString);
+					displayName = culture.DisplayName;
+				}
+				catch
+				{
+					displayName = filePair.CultureString;
+				}
+				displayName = displayName ?? String.Empty;
+			}
+			return displayName;
 		}
 
 		public override int GetHashCode()
