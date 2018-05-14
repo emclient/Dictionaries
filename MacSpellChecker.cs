@@ -113,15 +113,22 @@ namespace MailClient.Dictionaries
 			set { checker.AutomaticallyIdentifiesLanguages = value; }
 		}
 
-		public virtual string LanguageToCulture(string value)
+		public static string LanguageToCulture(string value)
 		{
+			if (value == "en" && !NSSpellChecker.SharedSpellChecker.AvailableLanguages.Contains("en-US"))
+				return "en-US";
+
 			return value.Replace('_', '-');
 		}
 
-		public virtual string CultureToLanguage(string value)
+		public static string CultureToLanguage(string value)
 		{
-			if (checker.AvailableLanguages.Contains(value)) // user-downloaded items can contain dashes.
+			var available = NSSpellChecker.SharedSpellChecker.AvailableLanguages;
+			if (available.Contains(value)) // user-downloaded items can contain dashes.
 				return value;
+
+			if (value == "en-US")
+				return "en";
 
 			return value.Replace('-', '_');
 		}

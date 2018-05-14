@@ -160,18 +160,17 @@ namespace MailClient.Dictionaries
 			files = new List<DictionaryFilePair>();
 			fileSettings = new List<DictionaryFileSetting>();
 
-			LoadBuiltInDirectories();
-
-			if (LongPathDirectory.Exists(userDictFolder))
-				loadDictionariesFromFolder(userDictFolder);
+			LoadBuiltInDictionaries();
+			LoadUserDictionaries();
 		}
+
 #if MAC
-		static void LoadBuiltInDirectories()
+		static void LoadBuiltInDictionaries()
 		{
 			var langs = NSSpellChecker.SharedSpellChecker.AvailableLanguages;
 			foreach(var lang in langs)
 			{
-				var code = lang.Replace("_", "-");
+				var code = MacSpellChecker.LanguageToCulture(lang);
 				try
 				{
 					var dfp = DictionaryFilePair.FromFileName(code);
@@ -185,11 +184,21 @@ namespace MailClient.Dictionaries
 				}
 			}
 		}
+
+		static void LoadUserDictionaries()
+		{
+		}
 #else
-		static void LoadBuiltInDirectories()
+		static void LoadBuiltInDictionaries()
 		{
 			if (LongPathDirectory.Exists(builtinDictFolder))
 				loadDictionariesFromFolder(builtinDictFolder);
+		}
+
+		static void LoadUserDictionaries()
+		{
+			if (LongPathDirectory.Exists(userDictFolder))
+				loadDictionariesFromFolder(userDictFolder);
 		}
 #endif
 		private static void loadDictionariesFromFolder(string folder)
