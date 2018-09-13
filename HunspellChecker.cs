@@ -48,7 +48,11 @@ namespace MailClient.Dictionaries
 
 		public virtual List<string> Suggest(string word, int max)
 		{
+#if NETCOREAPP
+			return currentSpellChecker.Suggest(word); // FIXME
+#else
 			return currentSpellChecker.Suggest(word, max);
+#endif
 		}
 
 		public virtual string Language
@@ -107,7 +111,7 @@ namespace MailClient.Dictionaries
 			}
 		}
 
-		#region Internals 
+#region Internals 
 
 		internal static ISpellChecker Create(DictionaryFilePair files)
 		{
@@ -247,6 +251,6 @@ namespace MailClient.Dictionaries
 			}
 		}
 
-		#endregion
+#endregion
 	}
 }
