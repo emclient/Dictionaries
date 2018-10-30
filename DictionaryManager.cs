@@ -29,9 +29,9 @@ namespace MailClient.Dictionaries
 		{
 			builtinDictFolder = Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "Dictionaries");
 #if MAC
-			var library = MacBridge.FoundationStatic.SearchPathForDirectoriesInDomains(
-				MacBridge.FoundationStatic.NSSearchPathDirectory.NSLibraryDirectory,
-				MacBridge.FoundationStatic.NSSearchPathDomainMask.NSUserDomainMask, true);
+			var library = MacApi.FoundationStatic.SearchPathForDirectoriesInDomains(
+				MacApi.FoundationStatic.NSSearchPathDirectory.NSLibraryDirectory,
+				MacApi.FoundationStatic.NSSearchPathDomainMask.NSUserDomainMask, true);
 			userDictFolder = library.Length > 0 ? Path.Combine(library[0], "Spelling") : String.Empty;
 
 #else
