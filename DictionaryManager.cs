@@ -81,7 +81,7 @@ namespace MailClient.Dictionaries
 				if (TryCreateDictionaryPair(culture.Name, out pair))
 					return pair;
 				ancestorCulture = culture;
-			} while ((culture = culture.Parent) != CultureInfo.InvariantCulture);
+			} while (!CultureInfo.InvariantCulture.Equals(culture = culture.Parent));
 
 			// try to find default culture
 			try
