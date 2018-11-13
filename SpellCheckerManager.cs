@@ -9,7 +9,8 @@ namespace MailClient.Dictionaries
 			if (instance == null)
 				instance = CreateSpellCheckerInternal(settings);
 
-			instance.Language = settings.ActiveSetting.FilePair.CultureString;
+			if (instance != null)
+				instance.Language = settings.ActiveSetting.FilePair.CultureString;
 
 			return instance;
 		}
