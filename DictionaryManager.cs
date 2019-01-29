@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -125,6 +125,14 @@ namespace MailClient.Dictionaries
 
 		public static bool TryCreateDictionaryPair(string culture, out DictionaryFilePair pair)
 		{
+			if (Environment.OSVersion.Platform == PlatformID.Win32NT && Environment.OSVersion.Version.Major >= 10)
+			{
+				// sr-Latn-CS and sr-Cyrl-CS are no longer used. sr-Latn-RS and sr-Cyrl-RS are used instead,
+				// but our dictionaries are still named in the old-fashioned way
+				if (culture.StartsWith("sr") && culture.EndsWith("RS"))
+					culture = culture.Substring(0, culture.Length - 2) + "CS";
+			}
+
 			string fileName = String.Format("{0}.dic", culture);
 
 			// try to find it firstly in the built-in dictionary folder, secondly in the user folder
