@@ -27,7 +27,7 @@ namespace MailClient.Dictionaries
 
 		static DictionaryManager()
 		{
-			builtinDictFolder = Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "Dictionaries");
+			builtinDictFolder = Path.Combine(Program.Directory, "Dictionaries");
 #if MAC
 			var library = MacApi.FoundationStatic.SearchPathForDirectoriesInDomains(
 				MacApi.FoundationStatic.NSSearchPathDirectory.NSLibraryDirectory,
