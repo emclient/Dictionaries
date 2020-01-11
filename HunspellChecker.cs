@@ -48,7 +48,7 @@ namespace MailClient.Dictionaries
 
 		public virtual List<string> Suggest(string word, int max)
 		{
-#if NETCOREAPP || NET48
+#if NETCOREAPP || NETFRAMEWORK
 			return currentSpellChecker.Suggest(word); // FIXME
 #else
 			return currentSpellChecker.Suggest(word, max);
