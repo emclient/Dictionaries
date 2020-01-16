@@ -2,8 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-using System.Windows.Forms;
-using Microsoft.Experimental.IO;
 
 #if XAMARINMAC
 using AppKit;
@@ -138,7 +136,7 @@ namespace MailClient.Dictionaries
 			// try to find it firstly in the built-in dictionary folder, secondly in the user folder
 			string path = Path.Combine(builtinDictFolder, fileName);
 
-			if (LongPathFile.Exists(path))
+			if (File.Exists(path))
 			{
 				fileName = path;
 				pair = DictionaryFilePair.FromFileName(fileName);
@@ -148,7 +146,7 @@ namespace MailClient.Dictionaries
 			{
 				path = Path.Combine(userDictFolder, fileName);
 
-				if (LongPathFile.Exists(path))
+				if (File.Exists(path))
 				{
 					fileName = path;
 					pair = DictionaryFilePair.FromFileName(fileName);
@@ -199,13 +197,13 @@ namespace MailClient.Dictionaries
 #else
 		static void LoadBuiltInDictionaries()
 		{
-			if (LongPathDirectory.Exists(builtinDictFolder))
+			if (Directory.Exists(builtinDictFolder))
 				loadDictionariesFromFolder(builtinDictFolder);
 		}
 
 		static void LoadUserDictionaries()
 		{
-			if (LongPathDirectory.Exists(userDictFolder))
+			if (Directory.Exists(userDictFolder))
 				loadDictionariesFromFolder(userDictFolder);
 		}
 #endif

@@ -4,7 +4,6 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using MailClient.Collections;
-using Microsoft.Experimental.IO;
 using NHunspell;
 
 namespace MailClient.Dictionaries
@@ -160,7 +159,7 @@ namespace MailClient.Dictionaries
 				StreamReader reader = null;
 				try
 				{
-					reader = new StreamReader(LongPathFile.Open(path, FileMode.Open, FileAccess.Read, FileShare.Read));
+					reader = new StreamReader(File.Open(path, FileMode.Open, FileAccess.Read, FileShare.Read));
 
 					string line;
 					do
@@ -204,7 +203,7 @@ namespace MailClient.Dictionaries
 		internal static bool CheckIfActiveDictionaryExists(DictionaryFilePair pair)
 		{
 			return !string.IsNullOrEmpty(pair.DictFile) && !string.IsNullOrEmpty(pair.AffFile)
-					&& LongPathFile.Exists(pair.DictFile) && LongPathFile.Exists(pair.AffFile);
+					&& File.Exists(pair.DictFile) && File.Exists(pair.AffFile);
 		}
 
 		internal virtual void AddWordToCustomDictionary(SpellCheckerSettings settings, string word)

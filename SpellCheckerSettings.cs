@@ -1,7 +1,5 @@
-﻿using System;
+using System;
 using System.IO;
-using Microsoft.Experimental.IO;
-using NHunspell;
 
 namespace MailClient.Dictionaries
 {
@@ -117,8 +115,8 @@ namespace MailClient.Dictionaries
 #else
 			if (!string.IsNullOrEmpty(ActiveFilePair.DictFile) &&
 				!string.IsNullOrEmpty(ActiveFilePair.AffFile) &&
-				LongPathFile.Exists(ActiveFilePair.DictFile) &&
-				LongPathFile.Exists(ActiveFilePair.AffFile))
+				File.Exists(ActiveFilePair.DictFile) &&
+				File.Exists(ActiveFilePair.AffFile))
 			{
 				return true;
 			}
