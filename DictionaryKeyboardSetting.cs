@@ -12,11 +12,6 @@
 			get { return DictionarySettingType.Keyboard; }
 		}
 
-		public DictionaryFilePair FilePair
-		{
-			get { return DictionaryManager.FindBestDictionary(System.Windows.Forms.InputLanguage.CurrentInputLanguage.Culture); }
-		}
-
 		public override string ToString()
 		{
 			return Resources.Dictionaries_base.KeyboardLanguage;
@@ -32,5 +27,21 @@
 
 			return culture != null;
 		}
+
+#if !MAC
+		public DictionaryFilePair FilePair
+		{
+			get { return DictionaryManager.FindBestDictionary(System.Windows.Forms.InputLanguage.CurrentInputLanguage.Culture); }
+		}
+#else
+		public DictionaryFilePair FilePair
+		{
+			get
+			{
+				var culture = MacSpellCheckerUtility.CultureFromCurrentKeyboard();
+				return DictionaryManager.FindBestDictionary(culture);
+			}
+		}
+#endif
 	}
 }

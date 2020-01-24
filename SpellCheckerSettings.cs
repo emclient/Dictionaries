@@ -108,6 +108,9 @@ namespace MailClient.Dictionaries
 			if (String.IsNullOrEmpty(code))
 				return false;
 
+			if (code == "auto")
+				return true;
+
 			var checker = SpellCheckerManager.CreateSpellChecker(this);
 			if (checker != null)
 			{
