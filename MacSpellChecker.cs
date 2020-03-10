@@ -69,7 +69,7 @@ namespace MailClient.Dictionaries
 
 			set
 			{
-				var code = CultureToLanguage(value);
+				var code = CultureToLanguage(value); // value
 				if (-1 != AvailableLanguages.IndexOf(code))
 				{
 					// Language codes of dictionaries installed by system usually contain underscore
