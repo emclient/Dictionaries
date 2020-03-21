@@ -27,11 +27,7 @@ namespace MailClient.Dictionaries
 		{
 			builtinDictFolder = Path.Combine(Program.Directory, "Dictionaries");
 #if MAC
-			var library = MacApi.FoundationStatic.SearchPathForDirectoriesInDomains(
-				MacApi.FoundationStatic.NSSearchPathDirectory.NSLibraryDirectory,
-				MacApi.FoundationStatic.NSSearchPathDomainMask.NSUserDomainMask, true);
-			userDictFolder = library.Length > 0 ? Path.Combine(library[0], "Spelling") : String.Empty;
-
+			userDictFolder = Path.Combine(MacApi.FoundationStatic.LibraryDirectory, "Spelling");
 #else
 			userDictFolder = Path.Combine(Program.DataStore.Location, "Dictionaries");
 #endif
@@ -120,7 +116,7 @@ namespace MailClient.Dictionaries
 				return pair;
 			}
 		}
-
+#if !MAC
 		public static bool TryCreateDictionaryPair(string culture, out DictionaryFilePair pair)
 		{
 			if (Environment.OSVersion.Platform == PlatformID.Win32NT && Environment.OSVersion.Version.Major >= 10)
@@ -159,7 +155,32 @@ namespace MailClient.Dictionaries
 				}
 			}
 		}
+#else
+		public static bool TryCreateDictionaryPair(string culture, out DictionaryFilePair pair)
+		{
+			var langs = NSSpellChecker.SharedSpellChecker.AvailableLanguages;
+			foreach (var lang in langs)
+			{
+				try
+				{
+					var code = MacSpellChecker.LanguageToCulture(lang);
+					if (code == culture)
+					{
+						pair = DictionaryFilePair.FromFileName(code);
+						return true;
+					}
+				}
+				catch
+				{
+					System.Diagnostics.Debug.WriteLine($"Failed creating dictionary file pair for culture '{culture}'");
+				}
+			}
 
+			pair = new DictionaryFilePair();
+			return false;
+		}
+
+#endif
 
 		public static void ReloadFiles()
 		{

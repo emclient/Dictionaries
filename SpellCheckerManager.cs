@@ -2,7 +2,7 @@ namespace MailClient.Dictionaries
 {
 	public static class SpellCheckerManager
 	{
-		static ISpellChecker instance;
+		internal static ISpellChecker instance;
 
 		public static ISpellChecker CreateSpellChecker(SpellCheckerSettings settings)
 		{
