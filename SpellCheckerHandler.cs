@@ -1,4 +1,4 @@
-﻿using System.Windows.Forms;
+using System.Windows.Forms;
 using System;
 using System.Linq;
 using MailClient.UI.Forms;
@@ -48,11 +48,11 @@ namespace MailClient.Dictionaries
 				parentForm.InputLanguageChanged += parentForm_InputLanguageChanged;
 		}
 
-		public void CreateContextMenu(ContextMenuStrip contextMenu)
+		public void CreateContextMenuWithParentMenu(ToolStripItemCollection items)
 		{
 			ToolStripItem dicMenuItem = null;
 			ToolStripItem lastItem = null;
-			foreach (ToolStripItem item in contextMenu.Items)
+			foreach (ToolStripItem item in items)
 			{
 				if ((item.Tag as string) == "dictionary")
 					dicMenuItem = item;
@@ -61,26 +61,22 @@ namespace MailClient.Dictionaries
 			}
 
 			if (dicMenuItem != null)
-				contextMenu.Items.Remove(dicMenuItem);
+				items.Remove(dicMenuItem);
 
 			if (lastItem != null && !(lastItem is ToolStripSeparator))
 			{
-				contextMenu.Items.Add(new ToolStripSeparator());
+				items.Add(new ToolStripSeparator());
 			}
 
 			ToolStripMenuItem dicts = new ToolStripMenuItem(Resources.UI.Controls_base.SpellCheckLanguage);
 			dicts.Tag = "dictionary";
-			contextMenu.Items.Add(dicts);
+			items.Add(dicts);
 
-			CreateContextMenu(dicts);
+			CreateContextMenu(dicts.DropDownItems);
 		}
 
-		public void CreateContextMenu(ToolStripMenuItem menuItem)
+		public void CreateContextMenu(ToolStripItemCollection items)
 		{
-			// do not assign the event multiple times (we do not know if we havent assigned it already, so try to remove it before)
-			menuItem.DropDownItemClicked -= new ToolStripItemClickedEventHandler(SpellCheckMenu_DropDownItemClicked);
-			menuItem.DropDownItemClicked += new ToolStripItemClickedEventHandler(SpellCheckMenu_DropDownItemClicked);
-
 			var checker = this.SpellCheckerSettings.GetSpellChecker();
 			if (checker != null && checker.SupportsLanguageIdentification)
 			{
@@ -88,8 +84,9 @@ namespace MailClient.Dictionaries
 				var item = new ToolStripMenuItem(Resources.UI.Forms.AutomaticByLanguage);
 				item.Tag = dict;
 				item.Checked = dict.FilePair.Equals(cachedSettings.FilePair);
-				menuItem.DropDownItems.Add(item);
-				menuItem.DropDownItems.Add(new ToolStripSeparator());
+				item.Click += SpellCheckMenu_ItemClicked;
+				items.Add(item);
+				items.Add(new ToolStripSeparator());
 			}
 
 			int count = 0;
@@ -101,17 +98,19 @@ namespace MailClient.Dictionaries
 				ToolStripMenuItem item = new ToolStripMenuItem(dictionary.ToString());
 				item.Tag = dictionary;
 				item.Checked = dictionary.FilePair.Equals(cachedSettings.FilePair);
-				menuItem.DropDownItems.Add(item);
+				item.Click += SpellCheckMenu_ItemClicked;
+				items.Add(item);
 			}
 
 			if (count > 0)
 			{
-				menuItem.DropDownItems.Add(new ToolStripSeparator());
+				items.Add(new ToolStripSeparator());
 			}
 
 			var menuItemMore = new ToolStripMenuItem(Resources.UI.Forms.DownloadDictionaries);
 			menuItemMore.Tag = "download";
-			menuItem.DropDownItems.Add(menuItemMore);
+			menuItemMore.Click += SpellCheckMenu_ItemClicked;
+			items.Add(menuItemMore);
 		}
 
 		void parentForm_InputLanguageChanged(object sender, InputLanguageChangedEventArgs e)
@@ -121,9 +120,9 @@ namespace MailClient.Dictionaries
 		}
 
 
-		private void SpellCheckMenu_DropDownItemClicked(object sender, ToolStripItemClickedEventArgs e)
+		private void SpellCheckMenu_ItemClicked(object sender, EventArgs e)
 		{
-			ToolStripMenuItem item = e.ClickedItem as ToolStripMenuItem;
+			ToolStripMenuItem item = sender as ToolStripMenuItem;
 			if (item != null)
 			{
 				if (item.Tag is IDictionarySetting)
