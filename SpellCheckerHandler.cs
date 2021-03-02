@@ -102,6 +102,7 @@ namespace MailClient.Dictionaries
 				items.Add(item);
 			}
 
+#if !HANCOM
 			if (count > 0)
 			{
 				items.Add(new ToolStripSeparator());
@@ -111,6 +112,7 @@ namespace MailClient.Dictionaries
 			menuItemMore.Tag = "download";
 			menuItemMore.Click += SpellCheckMenu_ItemClicked;
 			items.Add(menuItemMore);
+#endif
 		}
 
 		void parentForm_InputLanguageChanged(object sender, InputLanguageChangedEventArgs e)
